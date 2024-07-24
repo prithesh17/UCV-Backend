@@ -36,6 +36,16 @@ const registerAdmin = asyncHandler(async (req, res) => {
         throw new ApiError(500, "Something went wrong while registering the Admin")
     }
 
+    const emailSubject = "Welcome to Undergrad Cohesion Virtue!";
+    const emailText = createAccountEmail(fullName, email, password);
+
+    try {
+        sendEmail(email, emailSubject, emailText);
+    } catch (error) {
+        console.error("Error sending email:", error);
+        throw new ApiError(500, "Admin created, but failed to send email");
+    }
+
     return res.status(201).json(
         new ApiResponse(200, createdUser, "User registered Successfully")
     )
@@ -63,22 +73,19 @@ const loginAdmin = asyncHandler(async (req, res) => {
 
     const options = {
         httpOnly: true,
-        secure: true
+        expires: new Date(Date.now() + 60 * 60 * 1000)
     }
 
-    return res
-        .status(200)
-        .cookie("accessToken", accessToken, options)
-        .json(
-            new ApiResponse(
-                200,
-                {
-                    user: loggedInUser, accessToken
-                },
-                "User logged In Successfully"
-            )
+    res.cookie("accessToken", accessToken, options)
+    res.status(200).json(
+        new ApiResponse(
+            200,
+            {
+                user: loggedInUser, accessToken
+            },
+            "User logged In Successfully"
         )
-
+    )
 })
 
 
@@ -109,7 +116,7 @@ const createStudent = asyncHandler(async (req, res) => {
     }
 
     const emailSubject = "Welcome to Undergrad Cohesion Virtue!";
-    const emailText =  createAccountEmail(fullName, email, password); 
+    const emailText = createAccountEmail(fullName, email, password);
 
     try {
         sendEmail(email, emailSubject, emailText);
@@ -150,7 +157,7 @@ const createSubject = asyncHandler(async (req, res) => {
     }
 
     const emailSubject = "Welcome to Undergrad Cohesion Virtue!";
-    const emailText =  createAccountEmail(facultyName, subjectCode, password); 
+    const emailText = createAccountEmail(facultyName, subjectCode, password);
 
     try {
         sendEmail(email, emailSubject, emailText);
@@ -162,6 +169,17 @@ const createSubject = asyncHandler(async (req, res) => {
     res.status(201).json(new ApiResponse(200, createdSubject, 'Subject created successfully'));
 
 })
+
+
+const removeStudent = asyncHandler(async (req,res)=>{
+
+})
+
+const removeSubject = asyncHandler(async (req,res)=>{
+    
+})
+
+
 
 
 export { registerAdmin, createStudent, createSubject, loginAdmin }

@@ -46,56 +46,96 @@ const loginStudent = asyncHandler(async (req, res) => {
 })
 
 const viewAttendence = asyncHandler(async (req, res) => {
-
-    const studentId = req.user._id;
-    const subjectCode  = 'CDDS2EDDD';
+    const studentId = req.user._id; 
+    const { subjectCode } = req.body;
 
     if (!subjectCode) {
         throw new ApiError(400, "Subject code is required");
     }
 
-    const subject = await Subject.findOne({ subjectCode });
-    if (!subject) {
-        throw new ApiError(404, "Subject not found");
+    try {
+        const subject = await Subject.findOne({ subjectCode });
+
+        if (!subject) {
+            throw new ApiError(404, "Subject not found");
+        }
+
+        const subjectId = subject._id;
+        const attendanceRecords = await Attendence.find({ studentId, subjectId });
+        if (!attendanceRecords.length) {
+            throw new ApiError(404, "No attendance records found for the given subject");
+        }
+        return res.status(200).json(
+            new ApiResponse(
+                200,
+                { attendanceRecords },
+                "Attendance records retrieved successfully"
+            )
+        );
+    } catch (error) {
+        console.error('Error fetching attendance records:', error);
+        throw new ApiError(500, "Failed to retrieve attendance records");
     }
+})
 
-    const subjectId = subject._id;
+const subjectList = asyncHandler(async (req, res) => {
+    const studentId = req.user._id;
+    try {
+        const student = await Student.findById(studentId);
 
-    const attendanceRecords = await Attendence.find({
-        studentId: studentId,
-        subjectId: subjectId
-    });
+        if (!student) {
+            throw new ApiError(404, 'Student not found');
+        }
 
-    res.status(200).json(new ApiResponse(200, attendanceRecords));
+        const adminId = student.adminId;
+        const subjects = await Subject.find({ adminId });
+        res.status(200).json(new ApiResponse(200, subjects, 'Subject list fetched successfully'));
 
+    } catch (error) {
+        throw new ApiError(500, 'Failed to fetch subject list');
+    }
 })
 
 const viewMarks = asyncHandler(async (req, res) => {
+     const studentId = req.user._id; 
+    const { subjectCode } = req.body; 
 
-    const studentId = req.user._id;
-    const subjectCode  = 'cdds2edDD';
-    
     if (!subjectCode) {
         throw new ApiError(400, "Subject code is required");
     }
 
-    const subject = await Subject.findOne({ subjectCode });
-    if (!subject) {
-        throw new ApiError(404, "Subject not found");
+    try {
+        const subject = await Subject.findOne({ subjectCode });
+
+        if (!subject) {
+            throw new ApiError(404, "Subject not found");
+        }
+
+        const subjectId = subject._id;
+
+        const marksRecords = await Marks.find({ studentId, subjectId });
+
+        if (!marksRecords.length) {
+            throw new ApiError(404, "No marks records found for the given subject");
+        }
+
+        return res.status(200).json(
+            new ApiResponse(
+                200,
+                { marksRecords },
+                "Marks records retrieved successfully"
+            )
+        );
+    } catch (error) {
+        console.error('Error fetching marks records:', error);
+        throw new ApiError(500, "Failed to retrieve marks records");
     }
-
-    const subjectId = subject._id;
-
-    const marksRecords = await Marks.find({
-        studentId: studentId,
-        subjectId: subjectId
-    });
-
-    res.status(200).json(new ApiResponse(200, marksRecords));
+   
 })
 
 export {
     loginStudent,
     viewAttendence,
-    viewMarks
+    viewMarks,
+    subjectList
 }
