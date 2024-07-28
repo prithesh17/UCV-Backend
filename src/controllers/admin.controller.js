@@ -76,7 +76,7 @@ const loginAdmin = asyncHandler(async (req, res) => {
         expires: new Date(Date.now() + 60 * 60 * 1000)
     }
 
-    res.cookie("accessToken", accessToken, options)
+    res.cookie('accessToken', accessToken, options);    
     res.status(200).json(
         new ApiResponse(
             200,
