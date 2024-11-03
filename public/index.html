@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Endpoints Documentation</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <header>
+        <h1>API Endpoints Documentation</h1>
+    </header>
+
+    <main>
+        <section class="intro">
+            <h2>Welcome!</h2>
+            <p>Below are the available API endpoints for Admin, Student, and Faculty users.</p>
+        </section>
+
+        <section class="endpoints">
+            <h2>Endpoints Overview</h2>
+
+            <h3>Admin Endpoints</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>URL</th>
+                        <th>Request Type</th>
+                        <th>Request Body Format</th>
+                        <th>Response Format</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>https://undergradcohesionvirtue.onrender.com/admin/register</td>
+                        <td>POST</td>
+                        <td>
+                            {
+                            "fullName": "string",<br>
+                            "email": "string",<br>
+                            "password": "string"
+                            }
+                        </td>
+                        <td>
+                            {
+                            "statusCode": 200,<br>
+                            "data": {<br>
+                            "_id": "string",<br>
+                            "fullName": "string",<br>
+                            "email": "string",<br>
+                            "createdAt": "string",<br>
+                            "updatedAt": "string",<br>
+                            "__v": "number"<br>
+                            },<br>
+                            "message": "User registered Successfully",<br>
+                            "success": true
+                            }<br>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>https://undergradcohesionvirtue.onrender.com/admin/login</td>
+                        <td>POST</td>
+                        <td>
+                            {
+                            "email": "string",<br>
+                            "password": "string"
+                            }
+                        </td>
+                        <td>
+                            {
+                            "statusCode": 200,<br>
+                            "data": {<br>
+                            "user": {<br>
+                            "_id": "string",<br>
+                            "fullName": "string",<br>
+                            "email": "string",<br>
+                            "createdAt": "string",<br>
+                            "updatedAt": "string",<br>
+                            "__v": "number"<br>
+                            },<br>
+                            "accessToken": "string"<br>
+                            },<br>
+                            "message": "User logged In Successfully",<br>
+                            "success": true
+                            }
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>https://undergradcohesionvirtue.onrender.com/admin/createStudent</td>
+                        <td>POST</td>
+                        <td>
+                            {
+                            "fullName": "string",<br>
+                            "usn": "string",<br>
+                            "email": "string",<br>
+                            "password": "string"<br>
+                            }<br>
+                            <strong>Headers:</strong><br>
+                            <em>Authorization: &lt;JWT Token&gt;</em>
+                        </td>
+                        <td>
+                            {
+                            "statusCode": 201,<br>
+                            "data": {<br>
+                            "_id": "string",<br>
+                            "adminId": "string",<br>
+                            "fullName": "string",<br>
+                            "usn": "string",<br>
+                            "email": "string",<br>
+                            "createdAt": "string",<br>
+                            "updatedAt": "string",<br>
+                            "__v": "number"<br>
+                            },<br>
+                            "message": "Student created successfully",<br>
+                            "success": true
+                            }<br>
+                            or<br>
+                            {
+                            "statusCode": 400,<br>
+                            "message": "Invalid input data"
+                            }
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>https://undergradcohesionvirtue.onrender.com/admin/createSubject</td>
+                        <td>POST</td>
+                        <td>
+                            {
+                            "subjectName": "string",<br>
+                            "subjectCode": "string",<br>
+                            "facultyName": "string",<br>
+                            "email": "string",<br>
+                            "password": "string"<br>
+                            }<br>
+                            <strong>Headers:</strong><br>
+                            <em>Authorization: &lt;JWT Token&gt;</em>
+                        </td>
+                        <td>
+                            {
+                            "statusCode": 200,<br>
+                            "data": {<br>
+                            "_id": "string",<br>
+                            "adminId": "string",<br>
+                            "subjectName": "string",<br>
+                            "subjectCode": "string",<br>
+                            "facultyName": "string",<br>
+                            "email": "string",<br>
+                            "createdAt": "string",<br>
+                            "updatedAt": "string",<br>
+                            "__v": "number"<br>
+                            },<br>
+                            "message": "Subject created successfully",<br>
+                            "success": true
+                            }<br>
+                            or<br>
+                            {
+                            "statusCode": 400,<br>
+                            "message": "Invalid input data"
+                            }
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>https://undergradcohesionvirtue.onrender.com/admin/dashboard</td>
+                        <td>GET</td>
+                        <td>
+                            <strong>Headers:</strong><br>
+                            <em>Authorization: &lt;JWT Token&gt;</em>
+                        </td>
+                        <td>
+                            {
+                            "statusCode": 200,<br>
+                            "data": {<br>
+                            "students": [<br>
+                            {<br>
+                            "_id": "string",<br>
+                            "fullName": "string",<br>
+                            "email": "string"<br>
+                            }<br>
+                            ],<br>
+                            "subjects": [<br>
+                            {<br>
+                            "_id": "string",<br>
+                            "subjectName": "string",<br>
+                            "subjectCode": "string"<br>
+                            }<br>
+                            ]<br>
+                            },<br>
+                            "message": "Students and subjects fetched successfully",<br>
+                            "success": true
+                            }
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>https://undergradcohesionvirtue.onrender.com/admin/removeStudent</td>
+                        <td>POST</td>
+                        <td>
+                            {
+                            "id": "string"
+                            }<br>
+                            <strong>Headers:</strong><br>
+                            <em>Authorization: &lt;JWT Token&gt;</em>
+                        </td>
+                        <td>
+                            {
+                            "statusCode": 200,<br>
+                            "message": "Student removed successfully",<br>
+                            "success": true,<br>
+                            "data": {<br>
+                            "_id": "string",<br>
+                            "adminId": "string",<br>
+                            "fullName": "string",<br>
+                            "usn": "string",<br>
+                            "email": "string",<br>
+                            "password": "string",<br>
+                            "createdAt": "string",<br>
+                            "updatedAt": "string",<br>
+                            "__v": "number"<br>
+                            }<br>
+                            }<br>
+                            or<br>
+                            {
+                            "statusCode": 404,<br>
+                            "message": "Student not found",<br>
+                            "success": false
+                            }
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>https://undergradcohesionvirtue.onrender.com/admin/removeSubject</td>
+                        <td>POST</td>
+                        <td>
+                            {
+                            "id": "string" 
+                            }<br>
+                            <strong>Headers:</strong><br>
+                            <em>Authorization: &lt;JWT Token&gt;</em>
+                        </td>
+                        <td>
+                            {
+                            "statusCode": 200,<br>
+                            "message": "Subject removed successfully",<br>
+                            "success": true,<br>
+                            "data": {<br>
+                            "_id": "string",<br>
+                            "adminId": "string",<br>
+                            "subjectName": "string",<br>
+                            "subjectCode": "string",<br>
+                            "facultyName": "string",<br>
+                            "email": "string",<br>
+                            "password": "string",<br>
+                            "createdAt": "string",<br>
+                            "updatedAt": "string",<br>
+                            "__v": "number"<br>
+                            }<br>
+                            }<br>
+                            or<br>
+                            {
+                            "statusCode": 404,<br>
+                            "message": "Subject not found",<br>
+                            "success": false
+                            }
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Your Application. All rights reserved.</p>
+    </footer>
+</body>
+
+</html>
