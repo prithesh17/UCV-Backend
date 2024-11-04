@@ -238,7 +238,7 @@
                         <td>POST</td>
                         <td>
                             {
-                            "id": "string" 
+                            "id": "string"
                             }<br>
                             <strong>Headers:</strong><br>
                             <em>Authorization: &lt;JWT Token&gt;</em>
@@ -270,6 +270,313 @@
                         </td>
                     </tr>
 
+                </tbody>
+            </table>
+            <h3>Student Endpoints</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>URL</th>
+                        <th>Request Type</th>
+                        <th>Request Body Format</th>
+                        <th>Response Format</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>https://undergradcohesionvirtue.onrender.com/student/login</td>
+                        <td>POST</td>
+                        <td>
+                            {
+                            "email": "string",<br>
+                            "password": "string"
+                            }
+                        </td>
+                        <td>
+                            {
+                                "statusCode": 200,
+                                "data": {
+                                    "user": {
+                                        "_id": "67275bf9a727f1a437d1153b",
+                                        "adminId": "6726fdcdb1e0245ba7154401",
+                                        "fullName": "Alice Johnson",
+                                        "usn": "4MT22",
+                                        "email": "alicejohnson@gmail.com",
+                                        "createdAt": "2024-11-03T11:18:17.478Z",
+                                        "updatedAt": "2024-11-03T11:18:17.478Z",
+                                        "__v": 0
+                                    },
+                                    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NzI3NWJmOWE3MjdmMWE0MzdkMTE1M2IiLCJlbWFpbCI6ImFsaWNlam9obnNvbkBnbWFpbC5jb20iLCJpYXQiOjE3MzA3MDg3OTcsImV4cCI6MTczMTU3Mjc5N30.L6BTKr_Zj2H4bbZTaiCiPnTeh42DtAXXrjKkijXDqr4"
+                                },
+                                "message": "User logged In Successfully",
+                                "success": true
+                            }
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>https://undergradcohesionvirtue.onrender.com/student/attendence</td>
+                        <td>POST</td>
+                        <td>
+                            <strong>Headers:</strong> Authorization: &lt;JWT Token&gt;
+                            and send subject code in  request body in below format {
+                                "subjectCode":"PHYS101"
+                            }
+                        </td>
+                        <td>
+                            {
+                            "statusCode": 200,<br>
+                            "data": {<br>
+                            "attendance": [<br>
+                            {"date": "string", "status": "Present/Absent"}<br>
+                            ]<br>
+                            },<br>
+                            "message": "Attendance fetched successfully",<br>
+                            "success": true
+                            }
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>https://undergradcohesionvirtue.onrender.com/student/marks</td>
+                        <td>POST</td>
+                        <td>
+                            <strong>Headers:</strong> Authorization: &lt;JWT Token&gt;
+                            and send subject code in  request body in below format {
+                                "subjectCode":"PHYS101"
+                            }
+                        </td>
+                        <td>
+                            {
+                                "statusCode": 200,
+                                "data": {
+                                    "marksRecords": [
+                                        {
+                                            "_id": "6727628777d866e5ccd87b79",
+                                            "studentId": "67275bf9a727f1a437d1153b",
+                                            "subjectId": "67275c82a727f1a437d11554",
+                                            "testType": "IA1",
+                                            "maxMarks": 20,
+                                            "scoredMarks": 9,
+                                            "createdAt": "2024-11-03T11:46:15.334Z",
+                                            "updatedAt": "2024-11-03T11:46:15.334Z",
+                                            "__v": 0
+                                        },
+                                        {
+                                            "_id": "6727629077d866e5ccd87b7d",
+                                            "studentId": "67275bf9a727f1a437d1153b",
+                                            "subjectId": "67275c82a727f1a437d11554",
+                                            "testType": "IA2",
+                                            "maxMarks": 20,
+                                            "scoredMarks": 10,
+                                            "createdAt": "2024-11-03T11:46:24.581Z",
+                                            "updatedAt": "2024-11-03T11:46:24.581Z",
+                                            "__v": 0
+                                        },
+                                        {
+                                            "_id": "6727629977d866e5ccd87b81",
+                                            "studentId": "67275bf9a727f1a437d1153b",
+                                            "subjectId": "67275c82a727f1a437d11554",
+                                            "testType": "IA3",
+                                            "maxMarks": 20,
+                                            "scoredMarks": 4,
+                                            "createdAt": "2024-11-03T11:46:33.501Z",
+                                            "updatedAt": "2024-11-03T11:47:17.147Z",
+                                            "__v": 0
+                                        }
+                                    ]
+                                },
+                                "message": "Marks records retrieved successfully",
+                                "success": true
+                            }
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>https://undergradcohesionvirtue.onrender.com/student/subjectList</td>
+                        <td>GET</td>
+                        <td>
+                            <strong>Headers:</strong> Authorization: &lt;JWT Token&gt;
+                        </td>
+                        <td>
+                            {
+                                "statusCode": 200,
+                                "data": [
+                                    {
+                                        "_id": "67275c82a727f1a437d11554",
+                                        "adminId": "6726fdcdb1e0245ba7154401",
+                                        "subjectName": "Physics",
+                                        "subjectCode": "PHYS101",
+                                        "facultyName": "Jane Smith",
+                                        "email": "janesmith@example.com",
+                                        "password": "$2b$10$hjnmX7ynPsvtIllB84dX9u2BJMKGBQ2WGqPImrUC2/96QZ2VfoUNO",
+                                        "createdAt": "2024-11-03T11:20:34.186Z",
+                                        "updatedAt": "2024-11-03T11:20:34.186Z",
+                                        "__v": 0
+                                    },
+                                    {
+                                        "_id": "67275c8ca727f1a437d11559",
+                                        "adminId": "6726fdcdb1e0245ba7154401",
+                                        "subjectName": "Chemistry",
+                                        "subjectCode": "CHEM202",
+                                        "facultyName": "Alice Johnson",
+                                        "email": "alicejohnson@example.com",
+                                        "password": "$2b$10$E5B0oH3Niz4oSiz/YglGNupruzdmGF4SB/MCRSuVzPOMNKEvXGY7q",
+                                        "createdAt": "2024-11-03T11:20:44.177Z",
+                                        "updatedAt": "2024-11-03T11:20:44.177Z",
+                                        "__v": 0
+                                    }
+                                ],
+                                "message": "Subject list fetched successfully",
+                                "success": true
+                            }
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <h3>Subject Endpoints</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>URL</th>
+                        <th>Request Type</th>
+                        <th>Request Body Format</th>
+                        <th>Response Format</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>https://undergradcohesionvirtue.onrender.com/subject/login</td>
+                        <td>POST</td>
+                        <td>
+                            {
+                                "subjectCode": "string",
+                                "password": "string"
+                            }
+                        </td>
+                        <td>
+                            {
+                            "statusCode": 200,
+                            "data": {
+                                "user": {
+                                    "_id": "user ID",
+                                    "adminId": "admin ID",
+                                    "subjectName": "subject name",
+                                    "subjectCode": "subject code",
+                                    "facultyName": "faculty name",
+                                    "email": "user email",
+                                    "createdAt": "creation timestamp",
+                                    "updatedAt": "update timestamp",
+                                    "__v": 0
+                                },
+                                "accessToken": "JWT token"
+                            },
+                            "message": "User logged In Successfully",
+                            "success": true
+                            }
+                        </td>                       
+                    </tr>
+
+                    <tr>
+                        <td>https://undergradcohesionvirtue.onrender.com/subject/studentList</td>
+                        <td>GET</td>
+                        <td>
+                            <strong>Headers:</strong> Authorization: &lt;JWT Token&gt;
+                        </td>
+                        <td>
+                            {
+                                "statusCode": 200,
+                                "data": [
+                                    {
+                                        "_id": "student ID",
+                                        "adminId": "admin ID",
+                                        "fullName": "student full name",
+                                        "usn": "student USN",
+                                        "email": "student email",
+                                        "password": "hashed password",
+                                        "createdAt": "creation timestamp",
+                                        "updatedAt": "update timestamp",
+                                        "__v": 0
+                                    },
+                                    {
+                                        "_id": "student ID",
+                                        "adminId": "admin ID",
+                                        "fullName": "student full name",
+                                        "usn": "student USN",
+                                        "email": "student email",
+                                        "password": "hashed password",
+                                        "createdAt": "creation timestamp",
+                                        "updatedAt": "update timestamp",
+                                        "__v": 0
+                                    },
+                                ],
+                                "message": "Student list fetched successfully",
+                                "success": true
+                            }
+                        </td> 
+                    </tr>
+                    <tr>
+                        <td>https://undergradcohesionvirtue.onrender.com/subject/updateAttendence</td>
+                        <td>POST</td>
+                        <td>
+                            { "studentId": "67275bf9a727f1a437d1153b", "date": "2024-11-01T00:00:00.000Z", "isPresent": "false" }<br>
+                            <strong>Headers:</strong> Authorization: &lt;JWT Token&gt;
+                        </td>
+                        <td>
+                            {
+                                "statusCode": 200,
+                                "data": {
+                                    "updatedAttendance": {
+                                        "_id": "6727607ff2946510e34067b0",
+                                        "date": "2024-11-01T00:00:00.000Z",
+                                        "studentId": "67275bf9a727f1a437d1153b",
+                                        "subjectId": "67275c82a727f1a437d11554",
+                                        "__v": 0,
+                                        "createdAt": "2024-11-03T11:37:35.412Z",
+                                        "isPresent": false,
+                                        "updatedAt": "2024-11-03T11:38:07.126Z"
+                                    }
+                                },
+                                "message": "Attendance updated successfully",
+                                "success": true
+                            }
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>https://undergradcohesionvirtue.onrender.com/subject/updateMarks</td>
+                        <td>POST</td>
+                        <td>
+                            { 
+                            "studentId": "67275bf9a727f1a437d1153b", 
+                            "testType": "IA3", //must be IA1/IA2/IA3
+                            "maxMarks": 20, 
+                            "scoredMarks": 4 //check if marks are btw 0 to 20 
+                        }
+<br>
+                            <strong>Headers:</strong> Authorization: &lt;JWT Token&gt;
+                        </td>
+                        <td>
+                            {
+                                "statusCode": 200,
+                                "data": {
+                                    "marks": {
+                                        "_id": "6727629977d866e5ccd87b81",
+                                        "studentId": "67275bf9a727f1a437d1153b",
+                                        "subjectId": "67275c82a727f1a437d11554",
+                                        "testType": "IA3",
+                                        "maxMarks": 20,
+                                        "scoredMarks": 4,
+                                        "createdAt": "2024-11-03T11:46:33.501Z",
+                                        "updatedAt": "2024-11-03T11:47:17.147Z",
+                                        "__v": 0
+                                    }
+                                },
+                                "message": "Marks updated successfully",
+                                "success": true
+                            }
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </section>

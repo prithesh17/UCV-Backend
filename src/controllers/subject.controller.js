@@ -5,6 +5,8 @@ import { Subject } from '../models/subject.model.js'
 import { Attendence } from '../models/attendance.model.js'
 import { Student } from '../models/student.model.js'
 import { Marks } from '../models/marks.model.js'
+import { uploadOnCloudinary } from '../utils/cloudinary.js'
+import { File } from '../models/file.model.js'
 
 const loginSubject = asyncHandler(async (req, res) => {
     const { subjectCode, password } = req.body
@@ -74,26 +76,24 @@ const updateAttendence = asyncHandler(async (req, res) => {
     }
 
     try {
-        const newAttendance = await Attendence.create({
-            studentId,
-            subjectId,
-            date: formattedDate,
-            isPresent
-        });
+        const updatedAttendance = await Attendence.findOneAndUpdate(
+            { studentId, subjectId, date: formattedDate },
+            { isPresent }, 
+            { new: true, upsert: true } 
+        );
 
-        return res.status(201).json(
+        return res.status(200).json(
             new ApiResponse(
-                201,
-                { newAttendance },
-                "Attendance created successfully"
+                200,
+                { updatedAttendance },
+                "Attendance updated successfully"
             )
         );
     } catch (error) {
-        console.error("Error creating attendance:", error);
-        throw new ApiError(500, "Failed to create attendance record");
+        console.error("Error updating attendance:", error);
+        throw new ApiError(500, "Failed to update attendance record");
     }
-
-})
+});
 
 const updateMarks = asyncHandler(async (req, res) => {
     const { studentId, testType, maxMarks, scoredMarks } = req.body;
@@ -138,11 +138,49 @@ const updateMarks = asyncHandler(async (req, res) => {
     }
 })
 
+const uploadPDF = asyncHandler(async (req, res) => {
 
+    const { fileName } = req.body;
+
+    if (!fileName) {
+        throw new ApiError(400, "File name is required");
+    }
+
+    if (!req.file) {
+        return res.status(400).json({ message: "No file uploaded" });
+    }
+
+    try {
+        const localFilePath = req.file.path;
+
+        const uploadResult = await uploadOnCloudinary(localFilePath);
+
+        if (!uploadResult) {
+            return res.status(500).json({ message: "Failed to upload file to Cloudinary" });
+        }
+
+        const newFile = new File({
+            adminId: req.user._id,
+            fileName: fileName,
+            url: uploadResult.url,
+        });
+
+        await newFile.save();
+
+
+        res.status(201).json({
+            message: "PDF uploaded successfully",
+        });
+    } catch (error) {
+        console.error("Error uploading PDF:", error);
+        res.status(500).json({ message: "Error uploading PDF" });
+    }
+});
 
 export {
     loginSubject,
     updateAttendence,
     updateMarks,
-    studentList
+    studentList,
+    uploadPDF
 }

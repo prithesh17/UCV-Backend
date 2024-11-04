@@ -76,7 +76,7 @@ const loginAdmin = asyncHandler(async (req, res) => {
         expires: new Date(Date.now() + 60 * 60 * 1000)
     }
 
-    res.cookie('accessToken', accessToken, options);    
+    res.cookie('accessToken', accessToken, options);
     res.status(200).json(
         new ApiResponse(
             200,
@@ -170,16 +170,72 @@ const createSubject = asyncHandler(async (req, res) => {
 
 })
 
+const listStudentsAndSubjects = asyncHandler(async (req, res) => {
+    try {
+        const adminId = req.user._id;
+        const students = await Student.find({ adminId: adminId }).select('fullName email');
 
-const removeStudent = asyncHandler(async (req,res)=>{
+        const subjects = await Subject.find({ adminId: adminId }).select('subjectName subjectCode');
 
-})
+        res.status(200).json({
+            statusCode: 200,
+            data: {
+                students: students,
+                subjects: subjects,
+            },
+            message: "Students and subjects fetched successfully",
+            success: true
+        });
 
-const removeSubject = asyncHandler(async (req,res)=>{
-    
-})
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ statusCode: 500, message: "Internal server error" });
+    }
+});
+
+const removeStudent = asyncHandler(async (req, res) => {
+    const { id } = req.body; 
+
+    const student = await Student.findByIdAndDelete(id);
+
+    if (!student) {
+        return res.status(404).json({
+            statusCode: 404,
+            message: "Student not found",
+            success: false
+        });
+    }
+
+    return res.status(200).json({
+        statusCode: 200,
+        message: "Student removed successfully",
+        success: true,
+        data: student 
+    });
+});
+
+const removeSubject = asyncHandler(async (req, res) => {
+    const { id } = req.body; 
+
+    const subject = await Subject.findByIdAndDelete(id);
+
+    if (!subject) {
+        return res.status(404).json({
+            statusCode: 404,
+            message: "Subject not found",
+            success: false
+        });
+    }
+
+    return res.status(200).json({
+        statusCode: 200,
+        message: "Subject removed successfully",
+        success: true,
+        data: subject 
+    });
+});
 
 
 
 
-export { registerAdmin, createStudent, createSubject, loginAdmin }
+export { registerAdmin, createStudent, createSubject, loginAdmin, listStudentsAndSubjects, removeStudent, removeSubject }

@@ -133,9 +133,60 @@ const viewMarks = asyncHandler(async (req, res) => {
    
 })
 
+const viewPDFs = asyncHandler(async (req, res) => {
+    const email = req.user.email;
+
+    try {
+        const student = await Student.findOne({ email });
+
+        if (!student) {
+            throw new ApiError(404, "Student not found");
+        }
+
+        const adminId = student.adminId;
+
+        const files = await File.find({ adminId });
+
+        const fileList = files.map(file => ({
+            fileName: file.fileName,
+            fileId: file._id,
+        }));
+
+        res.status(200).json({
+            message: "PDFs retrieved successfully",
+            files: fileList,
+        });
+    } catch (error) {
+        console.error("Error fetching PDFs:", error);
+        throw new ApiError(500, "Error fetching PDFs");
+    }
+});
+
+const downloadPDF = asyncHandler(async (req, res) => {
+    const { fileId } = req.params;
+
+    try {
+        const file = await File.findById(fileId);
+
+        if (!file) {
+            throw new ApiError(404, "File not found");
+        }
+
+        res.status(200).json({
+            message: "File URL retrieved successfully",
+            url: file.url,
+        });
+    } catch (error) {
+        console.error("Error retrieving file URL:", error);
+        throw new ApiError(500, "Error retrieving file URL");
+    }
+});
+
 export {
     loginStudent,
     viewAttendence,
     viewMarks,
-    subjectList
+    subjectList,
+    viewPDFs,
+    downloadPDF
 }
