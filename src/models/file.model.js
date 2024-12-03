@@ -1,14 +1,16 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema } from 'mongoose'
 
-const fileSchema = new mongoose.Schema({
+const fileSchema = new Schema({
     adminId: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
-        ref: 'Admin', 
+        ref: 'Admin',
     },
     fileName: {
         type: String,
         required: true,
+        unique: true, 
+        trim: true,
     },
     url: {
         type: String,
@@ -18,4 +20,6 @@ const fileSchema = new mongoose.Schema({
     timestamps: true,
 });
 
-export const File = mongoose.model('File', fileSchema)
+fileSchema.index({ adminId: 1, fileName: 1 }, { unique: true }); 
+
+export const File = mongoose.model('File', fileSchema);

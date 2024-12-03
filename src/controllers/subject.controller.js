@@ -78,8 +78,8 @@ const updateAttendence = asyncHandler(async (req, res) => {
     try {
         const updatedAttendance = await Attendence.findOneAndUpdate(
             { studentId, subjectId, date: formattedDate },
-            { isPresent }, 
-            { new: true, upsert: true } 
+            { isPresent },
+            { new: true, upsert: true }
         );
 
         return res.status(200).json(
@@ -139,11 +139,10 @@ const updateMarks = asyncHandler(async (req, res) => {
 })
 
 const uploadPDF = asyncHandler(async (req, res) => {
-
     const { fileName } = req.body;
 
     if (!fileName) {
-        throw new ApiError(400, "File name is required");
+        return res.status(400).json({ message: "File name is required" });
     }
 
     if (!req.file) {
@@ -151,8 +150,20 @@ const uploadPDF = asyncHandler(async (req, res) => {
     }
 
     try {
-        const localFilePath = req.file.path;
+        const faculty = await Subject.findOne({ _id: req.user._id });
 
+        if (!faculty) {
+            return res.status(404).json({ message: "Faculty not found" });
+        }
+
+        const adminId = faculty.adminId;
+
+        const existingFile = await File.findOne({ fileName, adminId });
+        if (existingFile) {
+            return res.status(400).json({ message: `A file with the name "${fileName}" already exists.` });
+        }
+
+        const localFilePath = req.file.path;
         const uploadResult = await uploadOnCloudinary(localFilePath);
 
         if (!uploadResult) {
@@ -160,20 +171,46 @@ const uploadPDF = asyncHandler(async (req, res) => {
         }
 
         const newFile = new File({
-            adminId: req.user._id,
+            adminId: adminId,
             fileName: fileName,
             url: uploadResult.url,
         });
 
         await newFile.save();
 
-
         res.status(201).json({
             message: "PDF uploaded successfully",
+            file: {
+                id: newFile._id,
+                fileName: newFile.fileName,
+                url: newFile.url,
+            },
         });
     } catch (error) {
         console.error("Error uploading PDF:", error);
+        if (error.code === 11000) {
+            return res.status(400).json({ message: `A file with the name "${fileName}" already exists.` });
+        }
         res.status(500).json({ message: "Error uploading PDF" });
+    }
+});
+
+const getFacultyNameById = asyncHandler(async (req, res, next) => {
+    try {
+        const facultyId = req.user._id; 
+
+        const faculty = await Subject.findById(facultyId);
+
+        if (!faculty) {
+            throw new ApiError(404, 'Faculty not found');
+        }
+
+        return res.status(200).json({
+            success: true,
+            name: faculty.facultyName, 
+        });
+    } catch (error) {
+        next(error); 
     }
 });
 
@@ -182,5 +219,6 @@ export {
     updateAttendence,
     updateMarks,
     studentList,
-    uploadPDF
+    uploadPDF,
+    getFacultyNameById
 }
